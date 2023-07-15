@@ -1,5 +1,5 @@
 name: Test push
-on: [push]
+on: [push, workflow_dispatch]
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -14,4 +14,4 @@ jobs:
       - name: Install dependecies
         run: npm ci
       - name: Test application
-        run: npm run test
+        run: npm run test-ci

@@ -6,17 +6,29 @@ on:
 name: Create Release
 
 jobs:
-  testing:
-    name: testing
+  test:
+    name: test
     runs-on: ubuntu-latest
     steps:
-      - name: testing
-        uses: ./.github/workflows/testing.yml
+      - name: Get repository code
+        uses: actions/checkout@v3
+
+      - name: Cache deps
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: node-modules-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install dependecies
+        run: npm ci
+
+      - name: Test application
+        run: npm run test-ci
 
   release:
     name: Create Release
     runs-on: ubuntu-latest
-    needs: testing
+    needs: test
     steps:
       - name: Get repository code
         uses: actions/checkout@v3
@@ -68,5 +80,24 @@ jobs:
     runs-on: ubuntu-latest
     needs: release
     steps:
-      - name: gh-pages
-        uses: ./.github/workflows/gh-pages.yml
+      - name: Get repository code
+        uses: actions/checkout@v3
+
+      - name: Cache deps
+        uses: actions/cache@v3
+
+        with:
+          path: ~/.npm
+          key: node-modules-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install dependecies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Publish to GH Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GH_TOKEN }}
+          publish_dir: ./build

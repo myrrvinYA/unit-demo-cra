@@ -5,6 +5,10 @@ on:
 
 name: Create Release
 
+permissions:
+  contents: read
+  issues: write
+
 jobs:
   test:
     name: test

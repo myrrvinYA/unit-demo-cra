@@ -14,7 +14,7 @@ if (container) {
 	const store = initStore()
 
 	root.render(
-		<BrowserRouter basename={process.env.PUBLIC_URL}>
+		<BrowserRouter basename={'/unit-demo-cra'}>
 			<Provider store={store}>
 				<Application />
 			</Provider>

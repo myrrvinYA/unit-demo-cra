@@ -15,9 +15,7 @@ jobs:
       - name: Install dependecies
         run: npm ci
       - name: Build project
-        run: |
-          PUBLIC_URL="/unit-demo-cra"
-          npm run build
+        run: npm run build
       - name: Publish to GH Pages
         uses: peaceiris/actions-gh-pages@v3
         with:

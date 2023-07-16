@@ -3,7 +3,7 @@ on:
     tags:
       - 'v*'
 
-name: Create Release
+name: Create release
 
 permissions:
   contents: read
@@ -30,7 +30,7 @@ jobs:
         run: npm run test-ci
 
   release:
-    name: Create Release
+    name: Create release
     runs-on: ubuntu-latest
     needs: test
     steps:

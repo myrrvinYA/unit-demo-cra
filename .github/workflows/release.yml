@@ -127,6 +127,9 @@ jobs:
       #   env:
       #     GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
+      - name: log
+        run: echo ${{ needs.release.outputs.issueNumber }}
+
       - name: Close Issue
         uses: peter-evans/close-issue@v3
         with:

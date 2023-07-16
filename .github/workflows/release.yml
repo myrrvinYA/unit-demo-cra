@@ -28,11 +28,11 @@ jobs:
           echo "::set-output name=date::$(date +'%Y-%m-%d')"
           echo "${{github.ref_name}}"
 
-      - name: Get the privious tag
-        id: privioustag
+      - name: Get current and previous tags
+        id: tags
         run: |
-          TAG=$(git tag -l --sort=-version:refname "v*" | tail -n 2 | head -n 1)
-          echo "TAG=$TAG" >> $GITHUB_ENV
+          echo "::set-output name=current::$(git describe --tags --abbrev=0)"
+          echo "::set-output name=previous::$(git describe --tags --abbrev=0 $(git rev-list --tags --skip=1 --max-count=1))"
         shell: bash
 
       - name: Generate changelog
@@ -40,8 +40,8 @@ jobs:
         uses: metcalfc/changelog-generator@v4.1.0
         with:
           mytoken: ${{ secrets.GH_TOKEN }}
-          head-ref: ${{ github.ref_name }}
-          base-ref: ${{ env.TAG }}
+          head-ref: ${{ steps.tags.outputs.current }}
+          base-ref: ${{ steps.tags.outputs.previous }}
 
       - name: Create Release
         id: create_release

@@ -31,8 +31,8 @@ jobs:
       - name: Get the privious tag
         id: privioustag
         run: |
-          echo "::set-output name=privioustag::$(git tag -l --sort=-version:refname 'v*' | head -n 2 | tail -n 1)
-          git tag -l --sort=-version:refname "v*" | head -n 2 | tail -n 1
+          TAG=$(git tag -l --sort=-version:refname "v*" | head -n 2 | tail -n 1)
+          echo "TAG=$TAG" >> $GITHUB_ENV
         shell: bash
 
       - name: Generate changelog
@@ -41,7 +41,7 @@ jobs:
         with:
           mytoken: ${{ secrets.GH_TOKEN }}
           head-ref: ${{ github.ref_name }}
-          base-ref: ${{steps.privioustag.outputs.privioustag}}
+          base-ref: ${{ env.TAG }}
 
       - name: Create Release
         id: create_release

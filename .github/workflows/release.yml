@@ -31,7 +31,7 @@ jobs:
       - name: Get the privious tag
         id: privioustag
         run: |
-          echo "::set-output name=privioustag::$(git tag -l --sort=-version:refname "v*" | head -n 2 | tail -n 1)
+          echo "::set-output name=privioustag::$(git tag -l --sort=-version:refname 'v*' | head -n 2 | tail -n 1)
           git tag -l --sort=-version:refname "v*" | head -n 2 | tail -n 1
         shell: bash
 

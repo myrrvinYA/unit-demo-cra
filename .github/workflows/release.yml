@@ -121,15 +121,14 @@ jobs:
           github_token: ${{ secrets.GH_TOKEN }}
           publish_dir: ./build
 
-      # - name: Comment issue with deploy
-      #   uses: peter-evans/create-or-update-comment@v3
-      #   with:
-      #     issue-number: ${{ needs.release.outputs.issueNumber }}
-      #     body: |
-      #       ## 💫 Deploy №${{ github.run_id }}
-      #       Page link: https://myrrvinya.github.io/unit-demo-cra/
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      - name: Comment issue with deploy
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          issue-number: ${{ needs.release.outputs.issueNumber }}
+          body: |
+            Page link: https://myrrvinya.github.io/unit-demo-cra/
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: log
         run: echo ${{ needs.release.outputs.issueNumber }}
@@ -139,5 +138,4 @@ jobs:
         with:
           issue-number: ${{ needs.release.outputs.issueNumber }}
           comment: |
-            ## ✅ Close Issue
-            Issue automatically closed on successful deployment
+            Issue automatically closed

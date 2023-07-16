@@ -42,14 +42,12 @@ jobs:
         id: date
         run: |
           echo "::set-output name=date::$(date +'%Y-%m-%d')"
-          echo "${{github.ref_name}}"
 
       - name: Get current and previous tags
         id: tags
         run: |
           echo "::set-output name=current::$(git tag -l --sort=-version:refname 'v*' | head -n 1)"
           echo "::set-output name=previous::$(git tag -l --sort=-version:refname 'v*' | head -n 2 | tail -n 1)"
-          git tag
         shell: bash
 
       - name: Generate changelog
@@ -60,21 +58,38 @@ jobs:
           head-ref: ${{ steps.tags.outputs.current }}
           base-ref: ${{ steps.tags.outputs.previous }}
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
+      - name: Create release issue
+        id: create_release_issue
+        uses: JasonEtco/create-an-issue@v2
         env:
+          VERSION: ${{ steps.tags.outputs.current }}
+          AUTHOR: ${{ github.actor }}
+          DATE: ${{ steps.date.outputs.date }}
+          CHANGELOG: ${{ steps.changelog.outputs.changelog }}
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: |
-            Release Author: ${{ github.actor }}
-            Release Date: ${{steps.date.outputs.date}}
-            Version: ${{ github.ref }}
-            Changelog: ${{ steps.changelog.outputs.changelog }}
-          draft: false
-          prerelease: false
+          filename: .github/ISSUE_TEMPLATE.md
+          update_existing: true
+          search_existing: all
+
+    outputs:
+      issueNumber: ${{ steps.create_release_issue.outputs.number }}
+      # - name: Create Release
+      #   id: create_release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      #   with:
+      #     tag_name: ${{ github.ref }}
+      #     release_name: Release ${{ github.ref }}
+      #     body: |
+      #       Release Author: ${{ github.actor }}
+      #       Release Date: ${{steps.date.outputs.date}}
+      #       Version: ${{ github.ref }}
+      #       Changelog: ${{ steps.changelog.outputs.changelog }}
+      #     draft: false
+      #     prerelease: false
+
   gh-pages:
     name: gh-pages
     runs-on: ubuntu-latest
@@ -101,3 +116,19 @@ jobs:
         with:
           github_token: ${{ secrets.GH_TOKEN }}
           publish_dir: ./build
+
+      - name: Comment issue with deploy
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          issue-number: ${{ needs.release.outputs.issueNumber }}
+          body: |
+            Page link: https://myrrvinya.github.io/unit-demo-cra/
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Close Issue
+        uses: peter-evans/close-issue@v3
+        with:
+          issue-number: ${{ needs.release.outputs.issueNumber }}
+          comment: |
+            Issue automatically closed

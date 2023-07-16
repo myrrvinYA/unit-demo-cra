@@ -33,6 +33,7 @@ jobs:
         run: |
           echo "::set-output name=current::$(git describe --tags --abbrev=0)"
           echo "::set-output name=previous::$(git describe --tags --abbrev=0 $(git rev-list --tags --skip=1 --max-count=1))"
+          git tag
         shell: bash
 
       - name: Generate changelog

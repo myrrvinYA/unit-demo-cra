@@ -78,6 +78,7 @@ jobs:
 
     outputs:
       issueNumber: ${{ steps.create_release_issue.outputs.number }}
+
       # - name: Create Release
       #   id: create_release
       #   uses: actions/create-release@v1

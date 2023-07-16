@@ -24,12 +24,6 @@ jobs:
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
-      - name: Generate changelog
-        id: changelog
-        uses: metcalfc/changelog-generator@v4.1.0
-        with:
-          myToken: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -42,6 +36,5 @@ jobs:
             Release Author: ${{ github.actor }}
             Release Date: ${{steps.date.outputs.date}}
             Version: ${{ github.ref }}
-            Changelog: ${{ steps.changelog.outputs.changelog }}
           draft: false
           prerelease: false

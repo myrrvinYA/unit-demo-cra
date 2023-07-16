@@ -6,9 +6,16 @@ on:
 name: Create Release
 
 jobs:
-  build:
+  testing:
+    name: testing
+    runs-on: ubuntu-latest
+    steps:
+      uses: ./.github/workflows/testing.yml
+
+  release:
     name: Create Release
     runs-on: ubuntu-latest
+    needs: testing
     steps:
       - name: Get repository code
         uses: actions/checkout@v3
@@ -56,3 +63,9 @@ jobs:
             Changelog: ${{ steps.changelog.outputs.changelog }}
           draft: false
           prerelease: false
+  gh-pages:
+    name: gh-pages
+    runs-on: ubuntu-latest
+    needs: release
+    steps:
+      uses: ./.github/workflows/gh-pages.yml

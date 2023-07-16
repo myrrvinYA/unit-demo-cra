@@ -27,8 +27,8 @@ jobs:
       - name: Get current and previous tags
         id: tags
         run: |
-          echo "::set-output name=current::$(git describe --tags --abbrev=0)"
-          echo "::set-output name=previous::$(git describe --tags --abbrev=0 $(git rev-list --tags --skip=1 --max-count=1))"
+          echo "::set-output name=current::$(git tag -l --sort=-version:refname 'v*' | head -n 1)"
+          echo "::set-output name=previous::$(git tag -l --sort=-version:refname 'v*' | head -n 2 | tail -n 1)"
           git tag
         shell: bash
 

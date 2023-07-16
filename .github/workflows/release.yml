@@ -122,6 +122,7 @@ jobs:
         with:
           issue-number: ${{ needs.release.outputs.issueNumber }}
           body: |
+            ## 💫 Deploy №${{ github.run_id }}
             Page link: https://myrrvinya.github.io/unit-demo-cra/
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -131,4 +132,5 @@ jobs:
         with:
           issue-number: ${{ needs.release.outputs.issueNumber }}
           comment: |
-            Issue automatically closed
+            ## ✅ Close Issue
+            Issue automatically closed on successful deployment
